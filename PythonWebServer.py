@@ -5,7 +5,6 @@ import os
 import subprocess
 import socket
 
-    
 class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
@@ -15,7 +14,8 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
                 num = float(param)
             else:
                 num = 1
-            print (self.path.split('/'))
+            print()
+            ##print (self.path.split('/'))
            
             self.send_response(200)
             self.send_header('Content-type','text/html')
@@ -34,25 +34,15 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(message, "utf8")) 
             return
         
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.255.255.255', 1))
-        IP = s.getsockname()[0]
-    except:
-        IP = '127.0.0.1'
-    finally:
-        s.close()
-    return IP
-
+                    
 
 def run():
     print('Avvio del server...')
-
-    IPAddress = get_ip()
+ 
+    hostname = socket.gethostname()
+    IPAddress = socket.gethostbyname(hostname)
     port = 8081
-       
+    
     server_address = (IPAddress, port)
     httpd = HTTPServer(server_address, testHTTPServer_RequestHandler)
     print('Server in esecuzione su ' + str(IPAddress) + ":" + str(port))
