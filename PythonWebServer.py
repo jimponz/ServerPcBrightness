@@ -11,22 +11,26 @@ class testHTTPServer_RequestHandler(BaseHTTPRequestHandler):
         if None != re.search('/api/setBrightness/*', self.path):
             param = self.path.split('/')[-1]
             if param:
-                num = float(param)
+                num = int(param)
             else:
                 num = 1
             print()
             ##print (self.path.split('/'))
            
             self.send_response(200)
-            self.send_header('Content-type','text/html')
+            self.send_header('Content-type', 'text/html')
             self.end_headers()
 
-            if num < 1:
+            if num < 0:
                 num = 1
             elif num > 100:
                 num = 100
-             
-            script = "powershell (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1," + str(num) + ")"
+
+            if num == 0:
+                script = "nircmd.exe monitor off"
+                print("Turning off monitor")
+            else:
+                script = "powershell (Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightnessMethods).WmiSetBrightness(1," + str(num) + ")"
 
             subprocess.Popen(script, shell=True)
                         
